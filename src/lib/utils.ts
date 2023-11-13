@@ -32,9 +32,11 @@ export function addBackgroundToPNG(dataUrl: string) {
   const png = PNG.sync.read(_buffer);
   const buffer = PNG.sync.write(png, options);
 
-  const filename = dataUrl.substring(dataUrl.length - 10) + '.png';
-  fs.writeFileSync(path.join(__dirname, filename), buffer);
-  console.log(path.join(__dirname, filename));
+  if (process.env.NODE_ENV !== 'production') {
+    const filename = dataUrl.substring(dataUrl.length - 10) + '.png';
+    fs.writeFileSync(path.join(__dirname, filename), buffer);
+    console.log(path.join(__dirname, filename));
+  }
 
   return bufferToDataUrl('image/png', buffer);
 }
