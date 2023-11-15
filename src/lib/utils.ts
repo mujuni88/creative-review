@@ -1,10 +1,8 @@
 import bufferToDataUrl from 'buffer-to-data-url';
-import { clsx, type ClassValue } from 'clsx';
 import { dataUriToBuffer } from 'data-uri-to-buffer';
 import fs from 'fs';
 import path from 'path';
 import { PNG } from 'pngjs';
-import { twMerge } from 'tailwind-merge';
 
 export function readAsDataURL(file: File) {
   return new Promise<string>((resolve, reject) => {
@@ -39,8 +37,4 @@ export function addBackgroundToPNG(dataUrl: string) {
   }
 
   return bufferToDataUrl('image/png', buffer);
-}
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
 }

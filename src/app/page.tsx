@@ -24,6 +24,7 @@ import {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
 } from 'react-sketch-canvas';
+import { Instructions } from '../components/instructions';
 
 export default function Home() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
@@ -33,15 +34,7 @@ export default function Home() {
   );
   const [prompt, setPrompt] = useState<string>('');
   const { status, reset, handleSubmit, predictionOutput } = useReplicate();
-
   const loading = status === Status.loading;
-  const error = status === Status.error;
-
-  const startOver = useCallback(() => {
-    reset();
-    setUserUploadedImage(null);
-    setMaskImage(null);
-  }, [reset]);
 
   const handleExport = useCallback(() => {
     if (!predictionOutput) return;
@@ -86,6 +79,7 @@ export default function Home() {
 
   const erase = useCallback(() => {
     canvasRef.current?.clearCanvas();
+    setMaskImage(null);
   }, []);
 
   const clear = useCallback(() => {
@@ -172,69 +166,45 @@ export default function Home() {
         </Card>
       </div>
       <div className='grid place-content-center bg-slate-100'>
-        <Card className='grid'>
-          <CardHeader className='flex justify-center'>
-            <Button
-              className='flex items-center space-x-2'
-              variant='flat'
-              onClick={handleExport}
-            >
-              <IconLeftArrow />
-              <span>Export</span>
-            </Button>
-          </CardHeader>
-          <CardBody className='min-h-[512px] min-w-[512px] overflow-visible bg-gray-100'>
-            {loading ? (
-              <Skeleton className='h-full'>
-                <div className='h-full bg-default-300'></div>
-              </Skeleton>
-            ) : null}
+        {!loading && !predictionOutput ? (
+          <Instructions
+            step1Completed={!!userUploadedImage}
+            step2Completed={!!maskImage}
+            step3Completed={!!prompt}
+          />
+        ) : (
+          <Card className='grid'>
             {predictionOutput ? (
-              <Image
-                alt='Output'
-                src={predictionOutput}
-                layout='full'
-                width='512'
-                height='512'
-              />
+              <CardHeader className='flex'>
+                <Button
+                  className='flex items-center space-x-2'
+                  variant='flat'
+                  onClick={handleExport}
+                  startContent={<IconLeftArrow />}
+                >
+                  Export
+                </Button>
+              </CardHeader>
             ) : null}
-          </CardBody>
-        </Card>
+            <CardBody className='min-h-[512px] min-w-[512px] overflow-visible bg-gray-100'>
+              {loading ? (
+                <Skeleton className='h-full'>
+                  <div className='h-full bg-default-300'></div>
+                </Skeleton>
+              ) : null}
+              {predictionOutput ? (
+                <Image
+                  alt='Output'
+                  src={predictionOutput}
+                  layout='full'
+                  width='512'
+                  height='512'
+                />
+              ) : null}
+            </CardBody>
+          </Card>
+        )}
       </div>
     </main>
   );
 }
-
-const Steps = () => {
-  return (
-    <div className='flex flex-col items-center justify-center space-y-6'>
-      <div className='w-80 space-y-4 rounded-lg p-6 dark:border-zinc-800'>
-        <h2 className='text-center text-2xl font-bold'>Follow these steps</h2>
-        <div className='flex items-start space-x-2'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-full font-bold'>
-            1
-          </div>
-          <div className='space-y-1'>
-            <h3 className='font-semibold'>Upload Image</h3>
-            <p className='text-zinc-500 dark:text-zinc-400'>
-              Select the image file you want to upload from your device.
-            </p>
-          </div>
-        </div>
-        <div className='flex items-start space-x-2'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-full font-bold '>
-            2
-          </div>
-          <div className='space-y-1'>
-            <h3 className='font-semibold'>Draw on the Image</h3>
-            <p className='text-zinc-500 dark:text-zinc-400'>
-              Use the drawing tool to highlight the areas you want to change on
-              the image.
-            </p>
-          </div>
-        </div>
-        <Button className='w-full'>Get Started</Button>
-      </div>
-    </div>
-  );
-};

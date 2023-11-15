@@ -1,6 +1,12 @@
-export const IconUndo = () => (
+import { cn } from '@nextui-org/react';
+
+interface IconProps {
+  className?: string;
+}
+
+export const IconUndo: React.FC<IconProps> = ({ className }) => (
   <svg
-    className=' h-5 w-5'
+    className={cn('h-5 w-5', className)}
     fill='none'
     height='24'
     stroke='currentColor'
@@ -16,9 +22,9 @@ export const IconUndo = () => (
   </svg>
 );
 
-export const IconRedo = () => (
+export const IconRedo: React.FC<IconProps> = ({ className }) => (
   <svg
-    className=' h-5 w-5'
+    className={cn('h-5 w-5', className)}
     fill='none'
     height='24'
     stroke='currentColor'
@@ -34,9 +40,9 @@ export const IconRedo = () => (
   </svg>
 );
 
-export const IconErase = () => (
+export const IconErase: React.FC<IconProps> = ({ className }) => (
   <svg
-    className=' h-5 w-5'
+    className={cn('h-5 w-5', className)}
     fill='none'
     height='24'
     stroke='currentColor'
@@ -53,9 +59,9 @@ export const IconErase = () => (
   </svg>
 );
 
-export const IconDelete = () => (
+export const IconDelete: React.FC<IconProps> = ({ className }) => (
   <svg
-    className=' h-5 w-5'
+    className={cn('h-5 w-5', className)}
     fill='none'
     height='24'
     stroke='currentColor'
@@ -72,9 +78,9 @@ export const IconDelete = () => (
   </svg>
 );
 
-export const IconLeftArrow = () => (
+export const IconLeftArrow: React.FC<IconProps> = ({ className }) => (
   <svg
-    className=' h-5 w-5'
+    className={cn('h-5 w-5', className)}
     fill='none'
     height='24'
     stroke='currentColor'
@@ -87,5 +93,62 @@ export const IconLeftArrow = () => (
   >
     <path d='m12 19-7-7 7-7' />
     <path d='M19 12H5' />
+  </svg>
+);
+
+export const IconUpload: React.FC<IconProps> = ({ className }) => (
+  <svg
+    className={cn('h-6 w-6', className)}
+    fill='none'
+    height='24'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
+    <polyline points='17 8 12 3 7 8' />
+    <line x1='12' x2='12' y1='3' y2='15' />
+  </svg>
+);
+
+export const IconEdit: React.FC<IconProps> = ({ className }) => (
+  <svg
+    className={cn('h-6 w-6', className)}
+    fill='none'
+    height='24'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path d='M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2h-5.5' />
+    <polyline points='14 2 14 8 20 8' />
+    <path d='M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z' />
+  </svg>
+);
+
+export const IconPrompt: React.FC<IconProps> = ({ className }) => (
+  <svg
+    className={cn('h-6 w-6', className)}
+    fill='none'
+    height='24'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path d='M17 6.1H3' />
+    <path d='M21 12.1H3' />
+    <path d='M15.1 18H3' />
   </svg>
 );
