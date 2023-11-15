@@ -4,6 +4,8 @@ export const PredicationSchema = z.object({
   prompt: z.string(),
   mask: z.string(),
   image: z.string(),
+  width: z.number(),
+  height: z.number(),
 });
 
 export type PredictionResult = {
@@ -38,12 +40,14 @@ export type GetPredicationsParams = {
   prompt: string;
   mask: string;
   image: string;
+  width: number;
+  height: number;
 };
 
 export async function getPredications(
   data: GetPredicationsParams
 ): Promise<PredictionResult> {
-  const { prompt, mask, image } = data;
+  const { prompt, mask, image, width, height = 512 } = data;
   const response = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
     headers: {
@@ -56,11 +60,11 @@ export async function getPredications(
       input: {
         mask,
         image,
-        width: 512,
-        height: 512,
+        width,
+        height,
         prompt,
         scheduler: 'DPMSolverMultistep',
-        num_outputs: 1,
+        num_outputs: 4,
         guidance_scale: 7.5,
         num_inference_steps: 25,
       },

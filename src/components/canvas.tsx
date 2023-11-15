@@ -41,7 +41,7 @@ export const Canvas: React.FC<CanvasProps> = ({
       <Image
         src={uploadedImage}
         layout='fill'
-        className='absolute left-0 top-0 z-0'
+        className='absolute left-0 top-0 z-0 object-cover'
         onLoad={handleOnImageLoaded}
         alt='Uploaded Image'
       />

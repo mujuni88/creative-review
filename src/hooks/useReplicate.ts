@@ -18,8 +18,11 @@ export const useReplicate = () => {
   const [error, setError] = useState<Error | null>(null);
   const [predictions, setPredictions] = useState<PredictionResult[] | null>([]);
   const prediction = predictions?.[predictions.length - 1];
-  const previousPrediction = predictions?.[predictions.length - 2];
-  const predictionOutput = prediction?.output?.[0];
+  const predictionOutputs = useMemo(
+    () => prediction?.output ?? [],
+    [prediction?.output]
+  );
+  const hasOutputs = predictionOutputs.length > 0;
 
   const fetchPredictions = useCallback(async (data: GetPredicationsParams) => {
     try {
@@ -95,8 +98,8 @@ export const useReplicate = () => {
   return useMemo(
     () => ({
       prediction,
-      predictionOutput,
-      previousPrediction,
+      predictionOutputs,
+      hasOutputs,
       handleSubmit,
       status,
       error,
@@ -104,8 +107,8 @@ export const useReplicate = () => {
     }),
     [
       prediction,
-      predictionOutput,
-      previousPrediction,
+      predictionOutputs,
+      hasOutputs,
       handleSubmit,
       status,
       error,

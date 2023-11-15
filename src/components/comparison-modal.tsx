@@ -1,6 +1,5 @@
 import {
   Button,
-  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -8,18 +7,31 @@ import {
   ModalHeader,
   ModalProps,
 } from '@nextui-org/react';
+import Image from 'next/image';
 
 interface ComparisonModalProps extends Omit<ModalProps, 'children'> {
   userUploadedImage: string;
-  predictionOutput: string;
+  predictionOutputs: string[];
 }
 const ComparisonModal = ({
   userUploadedImage,
-  predictionOutput,
+  predictionOutputs,
   isOpen,
   onOpenChange,
   ...rest
 }: ComparisonModalProps) => {
+  const outputs = predictionOutputs.map((output, i) => {
+    return (
+      <Image
+        key={i}
+        alt='Prediction Output'
+        src={output}
+        layout='fill'
+        className='object-cover'
+      />
+    );
+  });
+
   return (
     <div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} {...rest} size='5xl'>
@@ -27,21 +39,14 @@ const ComparisonModal = ({
           {(onClose) => (
             <>
               <ModalHeader>Image Comparison</ModalHeader>
-              <ModalBody className='grid grid-cols-2 gap-4'>
+              <ModalBody className='grid auto-cols-min grid-flow-col overflow-x-scroll'>
                 <Image
                   alt='User Uploaded Image'
                   src={userUploadedImage}
-                  width={512}
-                  height={512}
+                  layout='fill'
                   className='object-cover'
                 />
-                <Image
-                  alt='Prediction Output'
-                  src={predictionOutput}
-                  width={512}
-                  height={512}
-                  className='object-cover'
-                />
+                {outputs}
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>

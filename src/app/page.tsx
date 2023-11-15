@@ -3,7 +3,6 @@ import { Canvas } from '@/components/canvas';
 import ComparisonModal from '@/components/comparison-modal';
 import { Dropzone } from '@/components/dropzone';
 import {
-  IconCompare,
   IconDelete,
   IconErase,
   IconRedo,
@@ -19,7 +18,6 @@ import {
   CardHeader,
   Input,
   Skeleton,
-  cn,
   useDisclosure,
 } from '@nextui-org/react';
 import Image from 'next/image';
@@ -37,19 +35,23 @@ export default function Home() {
     null
   );
   const [prompt, setPrompt] = useState<string>('');
-  const { status, reset, handleSubmit, predictionOutput } = useReplicate();
+  const { status, reset, handleSubmit, predictionOutputs, hasOutputs } =
+    useReplicate();
   const { onOpen, isOpen, onOpenChange } = useDisclosure();
 
   const loading = status === Status.loading;
 
-  const handleExport = useCallback(() => {
-    if (!predictionOutput) return;
+  const handleExport = useCallback(
+    (imgSrc: string) => {
+      if (!hasOutputs) return;
 
-    setUserUploadedImage(predictionOutput);
-    canvasRef.current?.clearCanvas();
-    setMaskImage(null);
-    reset();
-  }, [predictionOutput, reset]);
+      setUserUploadedImage(imgSrc);
+      canvasRef.current?.clearCanvas();
+      setMaskImage(null);
+      // reset();
+    },
+    [hasOutputs]
+  );
 
   const handleOnChange = useCallback<
     NonNullable<ReactSketchCanvasProps['onChange']>
@@ -91,6 +93,8 @@ export default function Home() {
         image: userUploadedImage,
         mask: maskImage,
         prompt,
+        width: 512,
+        height: 512,
       });
     },
     [handleSubmit, maskImage, prompt, userUploadedImage]
@@ -98,8 +102,8 @@ export default function Home() {
 
   return (
     <>
-      <main className='grid grid-cols-[1fr_auto_1fr] gap-4'>
-        <div className='grid place-content-center'>
+      <main className='grid grid-cols-[1fr_max-content_minmax(max-content,1fr)_minmax(max-content,1fr)_1fr] gap-4 p-10'>
+        <div className='col-start-2 grid place-content-center'>
           <Card className='grid'>
             <CardHeader className='flex gap-2'>
               <Button
@@ -141,7 +145,7 @@ export default function Home() {
                 Clear
               </Button>
             </CardHeader>
-            <CardBody className='min-h-[512px] min-w-[512px] overflow-visible bg-gray-100'>
+            <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
               <Canvas
                 uploadedImage={userUploadedImage}
                 onChange={handleOnChange}
@@ -177,10 +181,10 @@ export default function Home() {
             </CardFooter>
           </Card>
         </div>
-        <div className='grid place-content-center'>
+        {/* <div className='grid place-content-center'>
           <Button
             className={cn('ml-auto flex items-center space-x-2', {
-              invisible: !predictionOutput,
+              invisible: !hasOutputs,
             })}
             variant='flat'
             color='primary'
@@ -190,54 +194,58 @@ export default function Home() {
           >
             Compare
           </Button>
-        </div>
-        <div className='grid place-content-center'>
-          {!loading && !predictionOutput ? (
+        </div> */}
+        <div className='col-span-2 grid place-content-center'>
+          {loading ? <LoadingShell count={4} /> : null}
+          {!loading && !hasOutputs ? (
             <Instructions
               step1Completed={!!userUploadedImage}
               step2Completed={!!maskImage}
               step3Completed={!!prompt}
             />
-          ) : (
-            <Card className='grid'>
-              {predictionOutput ? (
-                <CardHeader className='flex gap-2'>
-                  <Button
-                    className='flex items-center space-x-2'
-                    variant='flat'
-                    onClick={handleExport}
-                    startContent={<IconReplace />}
-                    size='sm'
-                  >
-                    Replace
-                  </Button>
-                </CardHeader>
-              ) : null}
-              <CardBody className='min-h-[512px] min-w-[512px] overflow-visible bg-gray-100'>
-                {loading ? (
-                  <Skeleton className='h-full'>
-                    <div className='h-full bg-default-300'></div>
-                  </Skeleton>
-                ) : null}
-                {predictionOutput ? (
-                  <Image
-                    alt='Output'
-                    src={predictionOutput}
-                    layout='full'
-                    width='512'
-                    height='512'
-                  />
-                ) : null}
-              </CardBody>
-            </Card>
-          )}
+          ) : null}
+
+          {!loading && hasOutputs ? (
+            <div className='grid grid-cols-2 gap-4'>
+              {predictionOutputs.map((predictionOutput, i) => (
+                <Card className='grid' key={i}>
+                  {predictionOutputs.length ? (
+                    <CardHeader className='flex gap-2'>
+                      <Button
+                        className='flex items-center space-x-2'
+                        variant='flat'
+                        onClick={() => handleExport(predictionOutput)}
+                        startContent={<IconReplace />}
+                        size='sm'
+                      >
+                        Pick
+                      </Button>
+                    </CardHeader>
+                  ) : null}
+                  <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
+                    {loading ? (
+                      <Skeleton className='h-full'>
+                        <div className='h-full bg-default-300'></div>
+                      </Skeleton>
+                    ) : null}
+                    <Image
+                      alt='Output'
+                      src={predictionOutput}
+                      className='object-cover'
+                      layout='fill'
+                    />
+                  </CardBody>
+                </Card>
+              ))}
+            </div>
+          ) : null}
         </div>
       </main>
 
       {isOpen ? (
         <ComparisonModal
           userUploadedImage={userUploadedImage ?? ''}
-          predictionOutput={predictionOutput ?? ''}
+          predictionOutputs={predictionOutputs ?? ''}
           onOpenChange={onOpenChange}
           isOpen={isOpen}
         />
@@ -245,3 +253,24 @@ export default function Home() {
     </>
   );
 }
+
+const LoadingShell = ({ count }: { count: number }) => {
+  return (
+    <div className='grid grid-cols-2 gap-4'>
+      {Array.from({ length: count }).map((_, i) => (
+        <Card className='grid' key={i}>
+          <CardHeader className='flex gap-2'>
+            <Skeleton className='h-6 w-20'>
+              <div className='h-full bg-default-300'></div>
+            </Skeleton>
+          </CardHeader>
+          <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
+            <Skeleton className='h-full'>
+              <div className='h-full bg-default-300'></div>
+            </Skeleton>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
+  );
+};
