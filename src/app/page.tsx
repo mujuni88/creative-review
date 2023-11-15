@@ -28,7 +28,6 @@ import {
   ReactSketchCanvasProps,
   ReactSketchCanvasRef,
 } from 'react-sketch-canvas';
-import { toast } from 'sonner';
 import { Instructions } from '../components/instructions';
 
 export default function Home() {
@@ -50,7 +49,6 @@ export default function Home() {
     canvasRef.current?.clearCanvas();
     setMaskImage(null);
     reset();
-    toast.success('Exported successfully');
   }, [predictionOutput, reset]);
 
   const handleOnChange = useCallback<
@@ -109,7 +107,7 @@ export default function Home() {
                 size='sm'
                 onClick={undo}
                 startContent={<IconUndo />}
-                isDisabled={loading}
+                isDisabled={loading || !userUploadedImage}
               >
                 Undo
               </Button>
@@ -118,7 +116,7 @@ export default function Home() {
                 size='sm'
                 onClick={redo}
                 startContent={<IconRedo />}
-                isDisabled={loading}
+                isDisabled={loading || !userUploadedImage}
               >
                 Redo
               </Button>
@@ -127,7 +125,7 @@ export default function Home() {
                 size='sm'
                 onClick={erase}
                 startContent={<IconErase />}
-                isDisabled={loading}
+                isDisabled={loading || !userUploadedImage}
               >
                 Erase
               </Button>
@@ -138,7 +136,7 @@ export default function Home() {
                 size='sm'
                 onClick={clear}
                 startContent={<IconDelete />}
-                isDisabled={loading}
+                isDisabled={loading || !userUploadedImage}
               >
                 Clear
               </Button>
