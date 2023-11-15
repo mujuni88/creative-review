@@ -152,3 +152,46 @@ export const IconPrompt: React.FC<IconProps> = ({ className }) => (
     <path d='M15.1 18H3' />
   </svg>
 );
+
+export const IconCompare: React.FC<IconProps> = ({ className }) => (
+  <svg
+    className={cn('h-6 w-6', className)}
+    fill='none'
+    height='24'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <circle cx='18' cy='18' r='3' />
+    <circle cx='6' cy='6' r='3' />
+    <path d='M13 6h3a2 2 0 0 1 2 2v7' />
+    <path d='M11 18H8a2 2 0 0 1-2-2V9' />
+  </svg>
+);
+
+export const IconReplace: React.FC<IconProps> = ({ className }) => (
+  <svg
+    className={cn('h-6 w-6', className)}
+    fill='none'
+    height='24'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2'
+    viewBox='0 0 24 24'
+    width='24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path d='M14 4c0-1.1.9-2 2-2' />
+    <path d='M20 2c1.1 0 2 .9 2 2' />
+    <path d='M22 8c0 1.1-.9 2-2 2' />
+    <path d='M16 10c-1.1 0-2-.9-2-2' />
+    <path d='m3 7 3 3 3-3' />
+    <path d='M6 10V5c0-1.7 1.3-3 3-3h1' />
+    <rect height='8' rx='2' width='8' x='2' y='14' />
+  </svg>
+);

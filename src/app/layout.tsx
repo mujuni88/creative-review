@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={cn(inter.className)}>
         <Providers>
           <Toaster richColors position='top-center' />
-          <main className='grid h-screen grid-rows-[auto_1fr]'>
+          <main className='grid h-screen grid-rows-[auto_1fr] bg-white'>
             <Header />
             {children}
           </main>
