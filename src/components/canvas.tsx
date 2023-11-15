@@ -10,30 +10,18 @@ import {
 } from 'react-sketch-canvas';
 
 export interface CanvasProps extends ReactSketchCanvasProps {
-  onDraw: (imgUrl: string) => void;
   uploadedImage: string | null;
+  canvasRef: React.RefObject<ReactSketchCanvasRef>;
 }
 export const Canvas: React.FC<CanvasProps> = ({
-  onDraw,
   uploadedImage,
+  canvasRef,
   ...rest
 }) => {
   const [canvasSize, setCanvasSize] = React.useState<{
     width: string;
     height: string;
   }>({ width: '512px', height: '512px' }); // [width, height]
-  const canvasRef = React.useRef<ReactSketchCanvasRef>(null);
-  const handleOnChange = useCallback<
-    NonNullable<ReactSketchCanvasProps['onChange']>
-  >(
-    async (paths) => {
-      if (!paths.length) return;
-
-      const maskImg = await canvasRef.current?.exportImage('png');
-      maskImg && onDraw(maskImg);
-    },
-    [onDraw]
-  );
 
   const handleOnImageLoaded = useCallback<NonNullable<ImageProps['onLoad']>>(
     (e) => {
@@ -49,7 +37,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   if (!uploadedImage) return null;
 
   return (
-    <div className='relative aspect-square w-full border border-dashed border-purple-400'>
+    <div className='relative aspect-square w-full border border-dashed'>
       <Image
         src={uploadedImage}
         layout='fill'
@@ -58,15 +46,14 @@ export const Canvas: React.FC<CanvasProps> = ({
         alt='Uploaded Image'
       />
       <ReactSketchCanvas
-        ref={canvasRef}
         width={canvasSize.width}
         height={canvasSize.height}
         strokeWidth={80}
         strokeColor='white'
         canvasColor='transparent'
-        onChange={handleOnChange}
-        className='absolute left-0 top-0 z-50 border border-dashed border-red-300'
+        className='absolute left-0 top-0 z-10 border border-dashed'
         {...rest}
+        ref={canvasRef}
       />
     </div>
   );

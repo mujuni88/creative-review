@@ -2,9 +2,11 @@ import { Navbar, NavbarBrand } from '@nextui-org/react';
 
 export default async function Header() {
   return (
-    <Navbar maxWidth='full'>
+    <Navbar maxWidth='full' className='bg-primary'>
       <NavbarBrand>
-        <p className='text-foreground'>Creative Review</p>
+        <p className='text-tertiary text-xl'>
+          <b>Pixel</b>Morph
+        </p>
       </NavbarBrand>
     </Navbar>
   );

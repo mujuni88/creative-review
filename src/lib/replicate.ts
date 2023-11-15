@@ -1,5 +1,10 @@
-'use server';
-import { addBackgroundToPNG } from '@/lib/utils';
+import { z } from 'zod';
+
+export const PredicationSchema = z.object({
+  prompt: z.string(),
+  mask: z.string(),
+  image: z.string(),
+});
 
 export type PredictionResult = {
   completed_at: string;
@@ -29,27 +34,16 @@ export type PredictionResult = {
   version: string;
 };
 
-// write type for output
-export type GetImageParams = {
+export type GetPredicationsParams = {
   prompt: string;
   mask: string;
   image: string;
-  width?: number;
-  height?: number;
 };
-export async function getImage(
-  prevState: Partial<PredictionResult>,
-  data: FormData
-) {
-  if (prevState.id) {
-    return prevState;
-  }
 
-  const prompt = data.get('prompt') as string;
-  const image = data.get('image') as string;
-  const _mask = data.get('mask') as string;
-  const mask = addBackgroundToPNG(_mask);
-
+export async function getPredications(
+  data: GetPredicationsParams
+): Promise<PredictionResult> {
+  const { prompt, mask, image } = data;
   const response = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
     headers: {
@@ -84,7 +78,9 @@ export async function getImage(
   return prediction as PredictionResult;
 }
 
-export async function pollPredictionResult(queryId: string, data: FormData) {
+export async function getPredictionById(
+  queryId: string
+): Promise<PredictionResult> {
   const response = await fetch(
     'https://api.replicate.com/v1/predictions/' + queryId,
     {
@@ -103,5 +99,6 @@ export async function pollPredictionResult(queryId: string, data: FormData) {
   const prediction = await response.json();
 
   console.log(prediction);
+
   return prediction as PredictionResult;
 }
