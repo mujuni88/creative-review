@@ -9,8 +9,8 @@ import { Providers } from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'PixelMorph',
-  description: 'PixelMorph helps you iterate on your image to make it perfect.',
+  title: 'PixelLingoAI',
+  description: 'PixelLingoAI aids in creative reviews',
 };
 
 export default function RootLayout({

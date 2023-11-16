@@ -5,7 +5,7 @@ export default async function Header() {
     <Navbar maxWidth='full' className='bg-primary'>
       <NavbarBrand>
         <p className='text-tertiary text-xl'>
-          <b>Pixel</b>Morph
+          <b>PixelLingo</b>AI
         </p>
       </NavbarBrand>
     </Navbar>
