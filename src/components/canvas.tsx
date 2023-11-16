@@ -48,7 +48,7 @@ export const Canvas: React.FC<CanvasProps> = ({
       <ReactSketchCanvas
         width={canvasSize.width}
         height={canvasSize.height}
-        strokeWidth={80}
+        strokeWidth={60}
         strokeColor='white'
         canvasColor='transparent'
         className='absolute left-0 top-0 z-10 border border-dashed'

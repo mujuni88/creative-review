@@ -27,19 +27,19 @@ const ComparisonModal = ({
           {(onClose) => (
             <>
               <ModalHeader>Image Comparison</ModalHeader>
-              <ModalBody className='grid min-h-[512px] w-full min-w-[512px] grid-cols-2 gap-4'>
-                <div className='grid gap-2'>
+              <ModalBody className='grid w-full grid-cols-2 gap-4'>
+                <div className='grid content-start gap-2'>
                   <p className='text-center text-gray-700'>Original Image</p>
 
                   <Image
                     alt='User Uploaded Image'
                     src={userUploadedImage}
-                    className='object-cover'
+                    className='aspect-square object-cover'
                     width={512}
                     height={512}
                   />
                 </div>
-                <div className='grid gap-2'>
+                <div className='grid content-start gap-2'>
                   <p className='text-center text-gray-700'>Prediction Output</p>
                   {predictionOutputs.map((output, i) => {
                     return (
@@ -49,7 +49,7 @@ const ComparisonModal = ({
                         src={output}
                         width={512}
                         height={512}
-                        className='object-cover'
+                        className='aspect-square object-cover'
                       />
                     );
                   })}
