@@ -3,6 +3,7 @@ import { Canvas } from '@/components/canvas';
 import ComparisonModal from '@/components/comparison-modal';
 import { Dropzone } from '@/components/dropzone';
 import {
+  IconCompare,
   IconDelete,
   IconErase,
   IconRedo,
@@ -18,6 +19,7 @@ import {
   CardHeader,
   Input,
   Skeleton,
+  cn,
   useDisclosure,
 } from '@nextui-org/react';
 import Image from 'next/image';
@@ -28,12 +30,15 @@ import {
 } from 'react-sketch-canvas';
 import { Instructions } from '../components/instructions';
 
+const canvasSize = 512;
 export default function Home() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const originalImgSrcRef = useRef<string | null>(null);
   const [maskImage, setMaskImage] = useState<string | null>(null);
-  const [userUploadedImage, setUserUploadedImage] = useState<string | null>(
+  const [userUploadedImage, _setUserUploadedImage] = useState<string | null>(
     null
   );
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
   const { status, reset, handleSubmit, predictionOutputs, hasOutputs } =
     useReplicate();
@@ -41,16 +46,24 @@ export default function Home() {
 
   const loading = status === Status.loading;
 
-  const handleExport = useCallback(
+  const setUserUploadedImage = useCallback((imgSrc: string | null) => {
+    _setUserUploadedImage(imgSrc);
+    setSelectedImg(null);
+    setMaskImage(null);
+    if (!originalImgSrcRef.current || typeof imgSrc !== 'string') {
+      originalImgSrcRef.current = imgSrc;
+    }
+  }, []);
+
+  const handlePick = useCallback(
     (imgSrc: string) => {
       if (!hasOutputs) return;
 
       setUserUploadedImage(imgSrc);
       canvasRef.current?.clearCanvas();
-      setMaskImage(null);
       // reset();
     },
-    [hasOutputs]
+    [hasOutputs, setUserUploadedImage]
   );
 
   const handleOnChange = useCallback<
@@ -80,8 +93,7 @@ export default function Home() {
     canvasRef.current?.clearCanvas();
     reset();
     setUserUploadedImage(null);
-    setMaskImage(null);
-  }, [reset]);
+  }, [reset, setUserUploadedImage]);
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -93,8 +105,8 @@ export default function Home() {
         image: userUploadedImage,
         mask: maskImage,
         prompt,
-        width: 512,
-        height: 512,
+        width: canvasSize,
+        height: canvasSize,
       });
     },
     [handleSubmit, maskImage, prompt, userUploadedImage]
@@ -102,7 +114,7 @@ export default function Home() {
 
   return (
     <>
-      <main className='grid grid-cols-[1fr_max-content_minmax(max-content,1fr)_minmax(max-content,1fr)_1fr] gap-4 p-10'>
+      <main className='grid grid-cols-[1fr_max-content_minmax(max-content,1fr)_minmax(max-content,1fr)_1fr] gap-6 p-10'>
         <div className='col-start-2 grid place-content-center'>
           <Card className='grid'>
             <CardHeader className='flex gap-2'>
@@ -145,7 +157,9 @@ export default function Home() {
                 Clear
               </Button>
             </CardHeader>
-            <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
+            <CardBody
+              className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100 `}
+            >
               <Canvas
                 uploadedImage={userUploadedImage}
                 onChange={handleOnChange}
@@ -181,20 +195,6 @@ export default function Home() {
             </CardFooter>
           </Card>
         </div>
-        {/* <div className='grid place-content-center'>
-          <Button
-            className={cn('ml-auto flex items-center space-x-2', {
-              invisible: !hasOutputs,
-            })}
-            variant='flat'
-            color='primary'
-            onClick={onOpen}
-            startContent={<IconCompare />}
-            size='sm'
-          >
-            Compare
-          </Button>
-        </div> */}
         <div className='col-span-2 grid place-content-center'>
           {loading ? <LoadingShell count={4} /> : null}
           {!loading && !hasOutputs ? (
@@ -208,21 +208,45 @@ export default function Home() {
           {!loading && hasOutputs ? (
             <div className='grid grid-cols-2 gap-4'>
               {predictionOutputs.map((predictionOutput, i) => (
-                <Card className='grid' key={i}>
+                <Card
+                  className={cn('grid', {
+                    'outline outline-blue-400':
+                      predictionOutput === (selectedImg || userUploadedImage),
+                  })}
+                  key={i}
+                >
                   {predictionOutputs.length ? (
                     <CardHeader className='flex gap-2'>
                       <Button
                         className='flex items-center space-x-2'
                         variant='flat'
-                        onClick={() => handleExport(predictionOutput)}
+                        onClick={() => handlePick(predictionOutput)}
                         startContent={<IconReplace />}
                         size='sm'
                       >
                         Pick
                       </Button>
+
+                      <Button
+                        className={cn('ml-auto flex items-center space-x-2', {
+                          invisible: !hasOutputs,
+                        })}
+                        variant='flat'
+                        color='primary'
+                        onClick={() => {
+                          setSelectedImg(predictionOutput);
+                          onOpen();
+                        }}
+                        startContent={<IconCompare />}
+                        size='sm'
+                      >
+                        Compare With Original
+                      </Button>
                     </CardHeader>
                   ) : null}
-                  <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
+                  <CardBody
+                    className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100`}
+                  >
                     {loading ? (
                       <Skeleton className='h-full'>
                         <div className='h-full bg-default-300'></div>
@@ -242,10 +266,10 @@ export default function Home() {
         </div>
       </main>
 
-      {isOpen ? (
+      {isOpen && originalImgSrcRef.current && selectedImg ? (
         <ComparisonModal
-          userUploadedImage={userUploadedImage ?? ''}
-          predictionOutputs={predictionOutputs ?? ''}
+          userUploadedImage={originalImgSrcRef.current}
+          predictionOutputs={[selectedImg]}
           onOpenChange={onOpenChange}
           isOpen={isOpen}
         />
@@ -264,7 +288,9 @@ const LoadingShell = ({ count }: { count: number }) => {
               <div className='h-full bg-default-300'></div>
             </Skeleton>
           </CardHeader>
-          <CardBody className='min-h-[512px] min-w-[512px] overflow-hidden bg-gray-100'>
+          <CardBody
+            className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100`}
+          >
             <Skeleton className='h-full'>
               <div className='h-full bg-default-300'></div>
             </Skeleton>

@@ -20,18 +20,6 @@ const ComparisonModal = ({
   onOpenChange,
   ...rest
 }: ComparisonModalProps) => {
-  const outputs = predictionOutputs.map((output, i) => {
-    return (
-      <Image
-        key={i}
-        alt='Prediction Output'
-        src={output}
-        layout='fill'
-        className='object-cover'
-      />
-    );
-  });
-
   return (
     <div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} {...rest} size='5xl'>
@@ -39,14 +27,33 @@ const ComparisonModal = ({
           {(onClose) => (
             <>
               <ModalHeader>Image Comparison</ModalHeader>
-              <ModalBody className='grid auto-cols-min grid-flow-col overflow-x-scroll'>
-                <Image
-                  alt='User Uploaded Image'
-                  src={userUploadedImage}
-                  layout='fill'
-                  className='object-cover'
-                />
-                {outputs}
+              <ModalBody className='grid min-h-[512px] w-full min-w-[512px] grid-cols-2 gap-4'>
+                <div className='grid gap-2'>
+                  <p className='text-center text-gray-700'>Original Image</p>
+
+                  <Image
+                    alt='User Uploaded Image'
+                    src={userUploadedImage}
+                    className='object-cover'
+                    width={512}
+                    height={512}
+                  />
+                </div>
+                <div className='grid gap-2'>
+                  <p className='text-center text-gray-700'>Prediction Output</p>
+                  {predictionOutputs.map((output, i) => {
+                    return (
+                      <Image
+                        key={i}
+                        alt='Prediction Output'
+                        src={output}
+                        width={512}
+                        height={512}
+                        className='object-cover'
+                      />
+                    );
+                  })}
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color='danger' variant='light' onPress={onClose}>
