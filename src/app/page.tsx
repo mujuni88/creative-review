@@ -30,7 +30,7 @@ import {
 } from 'react-sketch-canvas';
 import { Instructions } from '../components/instructions';
 
-const canvasSize = 512;
+const canvasSize = 384;
 export default function Home() {
   const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const originalImgSrcRef = useRef<string | null>(null);
@@ -114,10 +114,10 @@ export default function Home() {
 
   return (
     <>
-      <main className='grid grid-cols-[1fr_max-content_minmax(max-content,1fr)_minmax(max-content,1fr)_1fr] gap-6 p-10'>
-        <div className='col-start-2 grid place-content-center'>
+      <main className='grid grid-cols-[auto_auto] gap-6 p-10'>
+        <div className='grid place-content-center'>
           <Card className='grid'>
-            <CardHeader className='flex gap-2'>
+            <CardHeader className='flex flex-wrap gap-2'>
               <Button
                 variant='flat'
                 size='sm'
@@ -158,7 +158,7 @@ export default function Home() {
               </Button>
             </CardHeader>
             <CardBody
-              className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100 `}
+              className={`min-h-img min-w-img overflow-hidden bg-gray-100 `}
             >
               <Canvas
                 uploadedImage={userUploadedImage}
@@ -195,7 +195,7 @@ export default function Home() {
             </CardFooter>
           </Card>
         </div>
-        <div className='col-span-2 grid place-content-center'>
+        <div className='grid place-content-center'>
           {loading ? <LoadingShell count={4} /> : null}
           {!loading && !hasOutputs ? (
             <Instructions
@@ -245,7 +245,7 @@ export default function Home() {
                     </CardHeader>
                   ) : null}
                   <CardBody
-                    className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100`}
+                    className={`min-h-img min-w-img overflow-hidden bg-gray-100`}
                   >
                     {loading ? (
                       <Skeleton className='h-full'>
@@ -289,7 +289,7 @@ const LoadingShell = ({ count }: { count: number }) => {
             </Skeleton>
           </CardHeader>
           <CardBody
-            className={`min-h-[${canvasSize}px] min-w-[${canvasSize}px] overflow-hidden bg-gray-100`}
+            className={`min-h-img min-w-img overflow-hidden bg-gray-100`}
           >
             <Skeleton className='h-full'>
               <div className='h-full bg-default-300'></div>

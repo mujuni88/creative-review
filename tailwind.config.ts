@@ -9,7 +9,14 @@ const config: Config = {
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      minWidth: {
+        img: '380px',
+      },
+      minHeight: {
+        img: '380px',
+      },
+    },
   },
   darkMode: 'class',
   plugins: [nextui()],

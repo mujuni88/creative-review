@@ -24,9 +24,11 @@ export const Dropzone: React.FC<React.PropsWithChildren<DropzoneProps>> = ({
     <div {...getRootProps()} className={className}>
       <input {...getInputProps()} />
       {isDragActive ? (
-        <p>Drop the files here ...</p>
+        <p className='p-4 text-center'>Drop the files here ...</p>
       ) : (
-        <p>Drag and drop some files here, or click to select files</p>
+        <p className='p-4 text-center'>
+          Drag and drop some files here, or click to select files
+        </p>
       )}
     </div>
   );
