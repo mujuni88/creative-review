@@ -114,10 +114,10 @@ export default function Home() {
 
   return (
     <>
-      <main className='grid grid-cols-[auto_auto] gap-6 p-10'>
+      <div className='grid gap-6 px-4 py-10 md:container md:mx-auto md:grid-cols-[auto_auto] md:px-10'>
         <div className='grid place-content-center'>
           <Card className='grid'>
-            <CardHeader className='flex flex-wrap gap-2'>
+            <CardHeader className='grid grid-flow-col gap-2'>
               <Button
                 variant='flat'
                 size='sm'
@@ -158,7 +158,7 @@ export default function Home() {
               </Button>
             </CardHeader>
             <CardBody
-              className={`min-h-img min-w-img overflow-hidden bg-gray-100 p-0`}
+              className={`min-h-img overflow-hidden bg-gray-100 p-0 md:md:min-w-img`}
             >
               <Canvas
                 uploadedImage={userUploadedImage}
@@ -206,7 +206,7 @@ export default function Home() {
           ) : null}
 
           {!loading && hasOutputs ? (
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid gap-4 md:grid-cols-2'>
               {predictionOutputs.map((predictionOutput, i) => (
                 <Card
                   className={cn('grid', {
@@ -245,7 +245,7 @@ export default function Home() {
                     </CardHeader>
                   ) : null}
                   <CardBody
-                    className={`min-h-img min-w-img overflow-hidden bg-gray-100 p-0`}
+                    className={`min-h-img overflow-hidden bg-gray-100 p-0 md:min-w-img`}
                   >
                     {loading ? (
                       <Skeleton className='h-full'>
@@ -264,7 +264,7 @@ export default function Home() {
             </div>
           ) : null}
         </div>
-      </main>
+      </div>
 
       {isOpen && originalImgSrcRef.current && selectedImg ? (
         <ComparisonModal
@@ -292,7 +292,7 @@ const LoadingShell = ({ count }: { count: number }) => {
             </Skeleton>
           </CardHeader>
           <CardBody
-            className={`min-h-img min-w-img overflow-hidden bg-gray-100`}
+            className={`min-h-img overflow-hidden bg-gray-100 md:min-w-img`}
           >
             <Skeleton className='h-full'>
               <div className='h-full bg-default-300'></div>

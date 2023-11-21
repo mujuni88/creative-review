@@ -6,7 +6,7 @@ export default async function Header() {
   return (
     <Navbar maxWidth='full' className='bg-primary'>
       <NavbarBrand>
-        <p className={cn('text-tertiary text-5xl', minecraft.className)}>
+        <p className={cn('text-tertiary text-4xl', minecraft.className)}>
           <b>PixeLingo</b>AI
         </p>
       </NavbarBrand>
